@@ -1,14 +1,20 @@
 (()=>{
 'use strict';
 
-// Five Oaks Studio is primarily used as a download tool on iPhone.
-// Prevent the iOS share sheet from replacing the normal file download.
 try{
   if ('canShare' in navigator) {
     Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>false});
   }
 }catch{
   try{ navigator.canShare=()=>false; }catch{}
+}
+
+function loadScript(src,match){
+  if(document.querySelector(`script[src^="${match}"]`)) return;
+  const script=document.createElement('script');
+  script.src=src;
+  script.async=false;
+  document.head.appendChild(script);
 }
 
 function renameVoiceButtons(){
@@ -27,25 +33,16 @@ function renameVoiceButtons(){
   }
 }
 
-function loadScrollingCredits(){
-  if(document.querySelector('script[src^="scrolling-credits.js"]')) return;
-  const script=document.createElement('script');
-  script.src='scrolling-credits.js?v=070';
-  script.async=false;
-  document.head.appendChild(script);
-}
-
 function showVersion(){
   document.querySelectorAll('.badge').forEach(el=>{
-    if(el.textContent.includes('Version')) el.textContent='Version 0.7.0';
+    if(el.textContent.includes('Version')) el.textContent='Version 0.7.1';
   });
   const footer=document.querySelector('.footer');
-  if(footer) footer.textContent='Five Oaks Studio — Version 0.7.0';
+  if(footer) footer.textContent='Five Oaks Studio — Version 0.7.1';
 }
 
-// Load the credits feature while the page is still being built so its
-// DOMContentLoaded setup runs with the rest of the studio.
-loadScrollingCredits();
+loadScript('scrolling-credits.js?v=071','scrolling-credits.js');
+loadScript('universal-download-fix.js?v=071','universal-download-fix.js');
 
 document.addEventListener('DOMContentLoaded',()=>{
   renameVoiceButtons();
