@@ -1,40 +1,117 @@
 (()=>{
 'use strict';
-try{if('canShare' in navigator)Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>false})}catch{try{navigator.canShare=()=>false}catch{}}
 
-function loadRepair(){
- if(document.querySelector('script[src^="final-ui-repair.js"]'))return;
- const s=document.createElement('script');s.src='final-ui-repair.js?v=074';s.async=false;document.head.appendChild(s);
+try{
+  if('canShare' in navigator){
+    Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>false});
+  }
+}catch{
+  try{navigator.canShare=()=>false}catch{}
 }
-function renameVoiceButtons(){
- const create=document.getElementById('generateMp3'),parts=document.getElementById('generateParts'),all=document.getElementById('downloadAllAudio');
- if(create)create.textContent='Create & Download MP3';if(parts)parts.textContent='Create & Download All Parts';if(all)all.textContent='Download all again';
- document.querySelectorAll('#audioDownloadList button').forEach(b=>{if(/save again/i.test(b.textContent))b.textContent='Download MP3'});
+
+function setText(id,text){
+  const el=document.getElementById(id);
+  if(el && el.textContent!==text) el.textContent=text;
 }
-function installDownloadButtons(){
- const motionCreate=document.getElementById('exportVideo');
- if(motionCreate&&!document.getElementById('downloadLastMotion')){
-  const b=document.createElement('button');b.id='downloadLastMotion';b.textContent='Download Last Motion Video';b.disabled=true;motionCreate.parentElement.appendChild(b);
-  b.onclick=()=>document.querySelector('#downloadList .downloadItem button')?.click();
- }
- const storyCreate=document.getElementById('createStory');
- if(storyCreate&&!document.getElementById('downloadLastStory')){
-  const b=document.createElement('button');b.id='downloadLastStory';b.textContent='Download Last Video';b.disabled=true;storyCreate.parentElement.appendChild(b);
-  b.onclick=()=>document.querySelector('#storyDownload .downloadItem a[download],#storyDownload .downloadItem button')?.click();
- }
- const card=document.getElementById('downloadCard');if(card)card.textContent='Download Card Image';
+
+function patchVersion(){
+  document.querySelectorAll('.badge').forEach(el=>{
+    if(el.textContent.includes('Version') && el.textContent!=='Version 0.7.5') el.textContent='Version 0.7.5';
+  });
+  const footer=document.querySelector('.footer');
+  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.7.5') footer.textContent='Five Oaks Studio — Version 0.7.5';
 }
-function refreshDownloads(){
- document.querySelectorAll('#downloadList .downloadItem button').forEach(b=>{b.textContent='Download Video';b.classList.add('good')});
- const motion=document.getElementById('downloadLastMotion');if(motion&&document.querySelector('#downloadList .downloadItem button'))motion.disabled=false;
- document.querySelectorAll('#storyDownload .downloadItem a[download],#storyDownload .downloadItem button').forEach(b=>{b.textContent='Download Video';b.classList.add('good','buttonLike')});
- const story=document.getElementById('downloadLastStory');if(story&&document.querySelector('#storyDownload .downloadItem a[download],#storyDownload .downloadItem button'))story.disabled=false;
- renameVoiceButtons();
+
+function patchLabels(){
+  setText('generateMp3','Create & Download MP3');
+  setText('generateParts','Create & Download All Parts');
+  setText('downloadAllAudio','Download all again');
+  setText('exportVideo','Create Video');
+  setText('createStory','Create Video');
+  setText('downloadCard','Download Image');
+  setText('exportCredits','Create Credits Video');
+
+  document.querySelectorAll('#audioDownloadList button').forEach(b=>{
+    if((b.textContent||'').trim()==='Save again') b.textContent='Download MP3';
+  });
+  document.querySelectorAll('#downloadList button').forEach(b=>{
+    if((b.textContent||'').trim()==='Save again') b.textContent='Download Video';
+    b.classList.add('good');
+  });
+  document.querySelectorAll('#storyDownload a[download],#storyDownload button').forEach(b=>{
+    if((b.textContent||'').trim()!=='Download Video') b.textContent='Download Video';
+    b.classList.add('good');
+  });
 }
-function patchVersion(){document.querySelectorAll('.badge').forEach(el=>{if(el.textContent.includes('Version'))el.textContent='Version 0.7.4'});const footer=document.querySelector('.footer');if(footer)footer.textContent='Five Oaks Studio — Version 0.7.4'}
-loadRepair();
+
+function ensureStoryMultiple(){
+  const input=document.getElementById('storyImages');
+  if(input){
+    input.multiple=true;
+    input.setAttribute('multiple','');
+    input.setAttribute('accept','image/*');
+  }
+}
+
+function ensureLastButtons(){
+  const motionCreate=document.getElementById('exportVideo');
+  if(motionCreate && !document.getElementById('downloadLastMotion')){
+    const b=document.createElement('button');
+    b.id='downloadLastMotion';
+    b.textContent='Download Last Video';
+    b.disabled=true;
+    b.addEventListener('click',()=>{
+      const target=document.querySelector('#downloadList .downloadItem button');
+      if(target && target!==b) target.click();
+    });
+    motionCreate.parentElement.appendChild(b);
+  }
+
+  const storyCreate=document.getElementById('createStory');
+  if(storyCreate && !document.getElementById('downloadLastStory')){
+    const b=document.createElement('button');
+    b.id='downloadLastStory';
+    b.textContent='Download Last Video';
+    b.disabled=true;
+    b.addEventListener('click',()=>{
+      const target=document.querySelector('#storyDownload .downloadItem a[download],#storyDownload .downloadItem button');
+      if(target && target!==b) target.click();
+    });
+    storyCreate.parentElement.appendChild(b);
+  }
+}
+
+function refreshReadyButtons(){
+  const motion=document.getElementById('downloadLastMotion');
+  if(motion) motion.disabled=!document.querySelector('#downloadList .downloadItem button');
+  const story=document.getElementById('downloadLastStory');
+  if(story) story.disabled=!document.querySelector('#storyDownload .downloadItem a[download],#storyDownload .downloadItem button');
+}
+
+function patch(){
+  patchVersion();
+  patchLabels();
+  ensureStoryMultiple();
+  ensureLastButtons();
+  refreshReadyButtons();
+}
+
+function loadScript(src,id){
+  if(document.getElementById(id)) return;
+  const s=document.createElement('script');
+  s.id=id;
+  s.src=src;
+  s.async=false;
+  document.head.appendChild(s);
+}
+
+loadScript('scrolling-credits.js?v=075','five-oaks-scrolling-credits');
+loadScript('universal-download-fix.js?v=075','five-oaks-universal-downloads');
+loadScript('story-download-fix.js?v=075','five-oaks-story-downloads');
+loadScript('video-story-fix.js?v=075','five-oaks-video-story-fix');
+
 document.addEventListener('DOMContentLoaded',()=>{
- patchVersion();
- setTimeout(()=>{installDownloadButtons();refreshDownloads();const root=document.querySelector('main.content')||document.body;new MutationObserver(()=>{installDownloadButtons();refreshDownloads()}).observe(root,{childList:true,subtree:true})},0);
+  patch();
+  [250,750,1500,3000].forEach(ms=>setTimeout(patch,ms));
 });
 })();
