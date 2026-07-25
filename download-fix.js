@@ -28,11 +28,11 @@ function renameVoiceButtons(){
 }
 
 function loadScrollingCredits(){
-  if(document.querySelector('script[src="scrolling-credits.js"]')) return;
+  if(document.querySelector('script[src^="scrolling-credits.js"]')) return;
   const script=document.createElement('script');
   script.src='scrolling-credits.js?v=070';
-  script.defer=true;
-  document.body.appendChild(script);
+  script.async=false;
+  document.head.appendChild(script);
 }
 
 function showVersion(){
@@ -43,10 +43,13 @@ function showVersion(){
   if(footer) footer.textContent='Five Oaks Studio — Version 0.7.0';
 }
 
+// Load the credits feature while the page is still being built so its
+// DOMContentLoaded setup runs with the rest of the studio.
+loadScrollingCredits();
+
 document.addEventListener('DOMContentLoaded',()=>{
   renameVoiceButtons();
   showVersion();
-  loadScrollingCredits();
   const list=document.getElementById('audioDownloadList');
   if(list) new MutationObserver(renameVoiceButtons).observe(list,{childList:true,subtree:true});
 });
