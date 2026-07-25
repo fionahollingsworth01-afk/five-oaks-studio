@@ -35,14 +35,15 @@ function renameVoiceButtons(){
 
 function showVersion(){
   document.querySelectorAll('.badge').forEach(el=>{
-    if(el.textContent.includes('Version')) el.textContent='Version 0.7.1';
+    if(el.textContent.includes('Version')) el.textContent='Version 0.7.2';
   });
   const footer=document.querySelector('.footer');
-  if(footer) footer.textContent='Five Oaks Studio — Version 0.7.1';
+  if(footer) footer.textContent='Five Oaks Studio — Version 0.7.2';
 }
 
-loadScript('scrolling-credits.js?v=071','scrolling-credits.js');
-loadScript('universal-download-fix.js?v=071','universal-download-fix.js');
+loadScript('scrolling-credits.js?v=072','scrolling-credits.js');
+loadScript('universal-download-fix.js?v=072','universal-download-fix.js');
+loadScript('story-download-fix.js?v=072','story-download-fix.js');
 
 document.addEventListener('DOMContentLoaded',()=>{
   renameVoiceButtons();
