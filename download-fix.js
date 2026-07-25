@@ -27,8 +27,26 @@ function renameVoiceButtons(){
   }
 }
 
+function loadScrollingCredits(){
+  if(document.querySelector('script[src="scrolling-credits.js"]')) return;
+  const script=document.createElement('script');
+  script.src='scrolling-credits.js?v=070';
+  script.defer=true;
+  document.body.appendChild(script);
+}
+
+function showVersion(){
+  document.querySelectorAll('.badge').forEach(el=>{
+    if(el.textContent.includes('Version')) el.textContent='Version 0.7.0';
+  });
+  const footer=document.querySelector('.footer');
+  if(footer) footer.textContent='Five Oaks Studio — Version 0.7.0';
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   renameVoiceButtons();
+  showVersion();
+  loadScrollingCredits();
   const list=document.getElementById('audioDownloadList');
   if(list) new MutationObserver(renameVoiceButtons).observe(list,{childList:true,subtree:true});
 });
