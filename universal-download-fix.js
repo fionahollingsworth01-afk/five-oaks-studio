@@ -1,7 +1,12 @@
 (()=>{
 'use strict';
 
-function labelDownloads(){
+function setText(id,text){
+  const el=document.getElementById(id);
+  if(el && el.textContent!==text) el.textContent=text;
+}
+
+function labelDownloads(root=document){
   const labels={
     exportVideo:'Create & Download Video',
     createStory:'Create & Download Video',
@@ -11,25 +16,19 @@ function labelDownloads(){
     generateParts:'Create & Download All Parts',
     downloadAllAudio:'Download All Again'
   };
-  Object.entries(labels).forEach(([id,text])=>{
-    const el=document.getElementById(id);
-    if(el) el.textContent=text;
-  });
+  Object.entries(labels).forEach(([id,text])=>setText(id,text));
 
-  document.querySelectorAll('.downloadItem button,.downloadItem a.buttonLike').forEach(el=>{
+  root.querySelectorAll?.('.downloadItem button,.downloadItem a.buttonLike').forEach(el=>{
     const text=(el.textContent||'').trim().toLowerCase();
     const parent=el.closest('.downloadItem');
     const heading=(parent?.querySelector('h3')?.textContent||'').toLowerCase();
-    if(text==='save again'){
-      el.textContent=heading.endsWith('.mp3')?'Download MP3':'Download Video';
-    }
-    if(text==='download video'||text==='download mp3'||text==='download image'){
-      el.classList.add('good');
-    }
+    if(text==='save again') el.textContent=heading.endsWith('.mp3')?'Download MP3':'Download Video';
+    const finalText=(el.textContent||'').trim().toLowerCase();
+    if(finalText==='download video'||finalText==='download mp3'||finalText==='download image') el.classList.add('good');
   });
 
   const creditsNav=document.querySelector('.nav [data-view="credits"]');
-  if(creditsNav) creditsNav.textContent='Credits';
+  if(creditsNav && creditsNav.textContent!=='Credits') creditsNav.textContent='Credits';
 }
 
 function addHelpfulEmptyMessages(){
@@ -48,8 +47,12 @@ function addHelpfulEmptyMessages(){
 document.addEventListener('DOMContentLoaded',()=>{
   labelDownloads();
   addHelpfulEmptyMessages();
-  new MutationObserver(()=>{
-    labelDownloads();
+  new MutationObserver(records=>{
+    for(const record of records){
+      record.addedNodes.forEach(node=>{
+        if(node.nodeType===1) labelDownloads(node);
+      });
+    }
     addHelpfulEmptyMessages();
   }).observe(document.body,{childList:true,subtree:true});
 });
