@@ -8,10 +8,10 @@ function setText(id,text){
 
 function patchVersion(){
   document.querySelectorAll('.badge').forEach(el=>{
-    if(el.textContent.includes('Version') && el.textContent!=='Version 0.8.0') el.textContent='Version 0.8.0';
+    if(el.textContent.includes('Version') && el.textContent!=='Version 0.8.1') el.textContent='Version 0.8.1';
   });
   const footer=document.querySelector('.footer');
-  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.8.0') footer.textContent='Five Oaks Studio — Version 0.8.0';
+  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.8.1') footer.textContent='Five Oaks Studio — Version 0.8.1';
 }
 
 function patchLabels(){
@@ -97,10 +97,11 @@ function loadScript(src,id){
   document.head.appendChild(s);
 }
 
-loadScript('universal-download-fix.js?v=080','five-oaks-universal-downloads');
-loadScript('story-download-fix.js?v=080','five-oaks-story-downloads');
-loadScript('video-story-fix.js?v=080','five-oaks-video-story-fix');
-loadScript('voice-presets.js?v=080','five-oaks-voice-presets');
+loadScript('universal-download-fix.js?v=081','five-oaks-universal-downloads');
+loadScript('story-download-fix.js?v=081','five-oaks-story-downloads');
+loadScript('video-story-fix.js?v=081','five-oaks-video-story-fix');
+loadScript('voice-presets.js?v=081','five-oaks-voice-presets');
+loadScript('video-builder.js?v=081','five-oaks-video-builder');
 
 document.addEventListener('DOMContentLoaded',()=>{
   patch();
