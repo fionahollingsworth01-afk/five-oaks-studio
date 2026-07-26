@@ -1,14 +1,6 @@
 (()=>{
 'use strict';
 
-try{
-  if('canShare' in navigator){
-    Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>false});
-  }
-}catch{
-  try{navigator.canShare=()=>false}catch{}
-}
-
 function setText(id,text){
   const el=document.getElementById(id);
   if(el && el.textContent!==text) el.textContent=text;
@@ -16,10 +8,10 @@ function setText(id,text){
 
 function patchVersion(){
   document.querySelectorAll('.badge').forEach(el=>{
-    if(el.textContent.includes('Version') && el.textContent!=='Version 0.7.6') el.textContent='Version 0.7.6';
+    if(el.textContent.includes('Version') && el.textContent!=='Version 0.7.8') el.textContent='Version 0.7.8';
   });
   const footer=document.querySelector('.footer');
-  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.7.6') footer.textContent='Five Oaks Studio — Version 0.7.6';
+  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.7.8') footer.textContent='Five Oaks Studio — Version 0.7.8';
 }
 
 function patchLabels(){
@@ -105,11 +97,11 @@ function loadScript(src,id){
   document.head.appendChild(s);
 }
 
-loadScript('scrolling-credits.js?v=076','five-oaks-scrolling-credits');
-loadScript('universal-download-fix.js?v=076','five-oaks-universal-downloads');
-loadScript('story-download-fix.js?v=076','five-oaks-story-downloads');
-loadScript('video-story-fix.js?v=076','five-oaks-video-story-fix');
-loadScript('voice-presets.js?v=076','five-oaks-voice-presets');
+loadScript('scrolling-credits.js?v=078','five-oaks-scrolling-credits');
+loadScript('universal-download-fix.js?v=078','five-oaks-universal-downloads');
+loadScript('story-download-fix.js?v=078','five-oaks-story-downloads');
+loadScript('video-story-fix.js?v=078','five-oaks-video-story-fix');
+loadScript('voice-presets.js?v=078','five-oaks-voice-presets');
 
 document.addEventListener('DOMContentLoaded',()=>{
   patch();
