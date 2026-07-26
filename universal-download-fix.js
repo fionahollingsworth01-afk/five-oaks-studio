@@ -1,6 +1,19 @@
 (()=>{
 'use strict';
 
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||
+  (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+
+// The main app prefers the Web Share API whenever it is available. Windows
+// exposes file sharing too, which opened the Windows Share panel instead of
+// downloading into the browser's Downloads folder. On laptops/desktops we
+// deliberately report that file sharing is unavailable so the app uses its
+// normal anchor-download path. iPhone/iPad/Android keep their share sheets.
+if(!isMobile){
+  try{Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>false});}
+  catch(_){try{navigator.canShare=()=>false}catch(__){}}
+}
+
 function setText(id,text){
   const el=document.getElementById(id);
   if(el && el.textContent!==text) el.textContent=text;
