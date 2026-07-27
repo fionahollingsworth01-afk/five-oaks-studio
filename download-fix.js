@@ -8,10 +8,10 @@ function setText(id,text){
 
 function patchVersion(){
   document.querySelectorAll('.badge').forEach(el=>{
-    if(el.textContent.includes('Version') && el.textContent!=='Version 0.8.4') el.textContent='Version 0.8.4';
+    if(el.textContent.includes('Version') && el.textContent!=='Version 0.8.5') el.textContent='Version 0.8.5';
   });
   const footer=document.querySelector('.footer');
-  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.8.4') footer.textContent='Five Oaks Studio — Version 0.8.4';
+  if(footer && footer.textContent!=='Five Oaks Studio — Version 0.8.5') footer.textContent='Five Oaks Studio — Version 0.8.5';
 }
 
 function patchLabels(){
@@ -97,11 +97,36 @@ function loadScript(src,id){
   document.head.appendChild(s);
 }
 
-loadScript('universal-download-fix.js?v=084','five-oaks-universal-downloads');
-loadScript('story-download-fix.js?v=084','five-oaks-story-downloads');
-loadScript('video-story-fix.js?v=084','five-oaks-video-story-fix');
-loadScript('voice-presets.js?v=084','five-oaks-voice-presets');
-loadScript('video-builder.js?v=084','five-oaks-video-builder');
+async function loadExpandedVideoBuilder(){
+  const id='five-oaks-video-builder';
+  if(document.getElementById(id)) return;
+  const marker=document.createElement('script');
+  marker.id=id;
+  marker.type='application/json';
+  document.head.appendChild(marker);
+  try{
+    const response=await fetch('video-builder.js?v=085',{cache:'no-store'});
+    if(!response.ok) throw new Error('Could not load the Complete Video Builder.');
+    let code=await response.text();
+    code=code
+      .replace('const MAX_CLIPS=5,','const MAX_CLIPS=40,')
+      .replace('Upload 1–5 video clips','Upload 1–40 short video clips')
+      .replace('Version 0.8.4','Version 0.8.5')
+      .replace('Five Oaks Studio — Version 0.8.4','Five Oaks Studio — Version 0.8.5');
+    const s=document.createElement('script');
+    s.textContent=code;
+    document.head.appendChild(s);
+  }catch(error){
+    marker.remove();
+    console.error(error);
+  }
+}
+
+loadScript('universal-download-fix.js?v=085','five-oaks-universal-downloads');
+loadScript('story-download-fix.js?v=085','five-oaks-story-downloads');
+loadScript('video-story-fix.js?v=085','five-oaks-video-story-fix');
+loadScript('voice-presets.js?v=085','five-oaks-voice-presets');
+loadExpandedVideoBuilder();
 
 document.addEventListener('DOMContentLoaded',()=>{
   patch();
